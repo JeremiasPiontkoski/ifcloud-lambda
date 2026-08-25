@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+
+  BiofassLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.10
+      Handler: main.lambda_handler
+      CodeUri: src/
+      Timeout: 60
+
+      Layers:
+        - !Ref DependenciesLayer
+        - !Ref CommonLayer
+
+  DependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: dependencies
+      ContentUri: layers/dependencies/
+      CompatibleRuntimes:
+        - python3.10
+
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: common
+      ContentUri: layers/common/
+      CompatibleRuntimes:
+        - python3.10
