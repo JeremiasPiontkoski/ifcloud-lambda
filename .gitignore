@@ -9,4 +9,3 @@ dmypy.json
 
 # Zip files
 *.zip
-!original_dependencies_backup.zip
