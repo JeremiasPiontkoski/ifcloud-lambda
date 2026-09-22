@@ -2,15 +2,35 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
-
   BiofassLambda:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: python3.10
       Handler: main.lambda_handler
       CodeUri: src/
-      Timeout: 60
+      Timeout: 180
+      Environment:
+        Variables:
+          LAMBDA_ENDPOINT: "http://172.17.0.1:3001"
+          SUPPORTED_SCRIPTS: "calcBPM.py:CalcBPMLambda,calcRPEAKS.py:CalcRPEAKS"
+      Layers:
+        - !Ref DependenciesLayer
+        - !Ref CommonLayer
 
+      Events:
+        Process:
+          Type: Api
+          Properties:
+            Path: /process
+            Method: post
+
+  CalcBPMLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.10
+      Handler: calcBPM.lambda_handler
+      CodeUri: src/
+      Timeout: 180
       Layers:
         - !Ref DependenciesLayer
         - !Ref CommonLayer
